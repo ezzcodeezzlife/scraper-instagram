@@ -1,4 +1,4 @@
-# ig-scraper
+# scraper-instagram
 
 Scrape data from Instagram without applying for the authenticated API.
 
