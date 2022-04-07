@@ -7,51 +7,45 @@ Scrape data from Instagram without applying for the authenticated API.
 ### Prerequisites
 
 - NodeJS
-- NPM
-- Yarn
+- NPM or Yarn
 
 ### Install
 
 From [npm](https://www.npmjs.com/package/scraper-instagram)
 
-`yarn add scraper-instagram`
-
-or
-
 `npm i scraper-instagram --save`
 
-### Test
+or 
 
-- `git clone https://github.com/ezzcodeezzlife/ig-scraper.git`
-- `yarn install` or `npm install`
-- `yarn test` or `npm run test`
+`yarn add scraper-instagram`
 
-Optional environment variables for more complete testing :
-- `SESSION_ID` : a session ID for authentication test and authenticated tests
-- `PUBLIC_PROFILE` : a public profile to access
-- `PRIVATE_PROFILE` : a private profile to access
-- `STORY_PROFILE_ID` : a profile ID with a story to read
-- `STORY_PROFILE_USERNAME` : a profile username with a story to read
-- `HASHTAG` (default value : `cat`) : a hashtag to fetch
-- `LOCATION_ID` (default value : `6889842` aka. Paris) : a location to fetch
-- `POST` : a post to fetch
-- `SEARCH_PROFILE` : a profile to search for
-- `SEARCH_HASHTAG` (default value : `cats`) : a hashtag to search for
-- `SEARCH_LOCATION` (default value : `Paris`) : a location to search for
 
-Methods not covered by tests :
-- `subscribeUserPosts`
-- `subscribeHashtagPosts`
-- `subscribeAccountNotifications`
 
-### Usage
+### Basic usage
 
 ```js
 const Insta = require('scraper-instagram');
 const InstaClient = new Insta();
+
+InstaClient.getHashtag("javascript")
+    .then((hashtag) => console.log(hashtag))
+    .catch((err) => console.error(err));
 ```
 
-#### Authentication
+```
+...
+{
+	shortcode: 'CbGxIdAXxA',
+	caption: 'Lorem ipsum #javascript',
+	comments: 66,
+	likes: 1090,
+	thumbnail: 'https://scontent-dus1-1.cdninstagram.com/v/123',
+	timestamp: 1647290186
+},
+...
+``` 
+
+# Authentication
 
 Authentication allows you to access private profile as long as you follow them.
 
@@ -113,7 +107,7 @@ These methods allows you to get specific elements from Instagram while you know 
 - Too many requests : rate limit exceeded (`429`)
 - Conflict : automation detected, password reset required (`409`)
 
-##### Get profile by username
+## Get profile by username
 
 ```js
 InstaClient.getProfile(username)
@@ -149,7 +143,7 @@ Result
 	- `following` *boolean* - you're following this profile
 	- `followed` *boolean* - this profile follows you
 
-##### Get profile story (requires authentication)
+## Get profile story (requires authentication)
 
 ##### Using profile ID
 
@@ -159,7 +153,7 @@ InstaClient.getProfileStoryById(id)
     	.catch(err => console.error(err));
 ```
 
-##### Using profile username (will automatically request profile ID)
+### Using profile username (will automatically request profile ID)
 
 ```js
 InstaClient.getProfileStory(username)
@@ -186,7 +180,7 @@ InstaClient.getProfileStory(username)
 
 Note : calling this method will not mark the story as read.
 
-##### Get hashtag
+## Get hashtag
 
 ```js
 InstaClient.getHashtag(hashtag)
@@ -205,7 +199,7 @@ Result
 - `user` *object* - user relevant properties **(while authenticated)** :
 	- `following` *boolean* - you [subscribed](https://help.instagram.com/2003408499915301) to this hashtag (receiving posts in your personal feed)
 
-##### Get location by ID
+### Get location by ID
 
 Unfortunately, using IDs is currently the only way to get a location, at least for now.
 
@@ -231,7 +225,7 @@ Result
 <br>`lastPosts` *array of posts* - last posts published from this location
 - `link` *url* - link to this location's page
 
-##### Array of posts
+### Array of posts
 
 This is a subset of a real post, containing the following properties :
 
@@ -242,7 +236,7 @@ This is a subset of a real post, containing the following properties :
 - `thumbnail` *url* - post thumbnail
 <br>Always static image wether it's a photo or a video post, lower quality.
 
-##### Get post by shortcode
+## Get post by shortcode
 
 The shortcode is the post's identifier : the link to a post is instagram.com/p/shortcode.
 
@@ -307,11 +301,11 @@ Sample :
 
 The `pageId`/`nextPageId` property may contain a string of digits, a base64 string, or a JSON string, but always must be leaved untouched.
 
-##### Get profile posts
+## Get profile posts
 
 Result in array : full post object
 
-###### Using profile ID
+##### Using profile ID
 
 ```js
 InstaClient.getProfilePostsById(profileId, maxCount, pageId)
@@ -319,7 +313,7 @@ InstaClient.getProfilePostsById(profileId, maxCount, pageId)
     	.catch(err => console.error(err));
 ```
 
-###### Using profile username (will automatically request profile ID)
+##### Using profile username (will automatically request profile ID)
 
 ```js
 InstaClient.getProfilePosts(profileUsername, maxCount, pageId)
@@ -327,7 +321,7 @@ InstaClient.getProfilePosts(profileUsername, maxCount, pageId)
     	.catch(err => console.error(err));
 ```
 
-##### Get post comments
+## Get post comments
 
 ```js
 InstaClient.getPostComments(shortcode, maxCount, pageId)
@@ -337,7 +331,7 @@ InstaClient.getPostComments(shortcode, maxCount, pageId)
 
 Result in array : comment object
 
-##### Get hashtag posts
+## Get hashtag posts
 
 ```js
 InstaClient.getHashtagPosts(hashtag, maxCount, pageId)
@@ -347,7 +341,7 @@ InstaClient.getHashtagPosts(hashtag, maxCount, pageId)
 
 Result in array : partial post object
 
-##### Get location posts
+## Get location posts
 
 ```js
 InstaClient.getLocationPostsById(locationId, maxCount, pageId)
@@ -357,9 +351,9 @@ InstaClient.getLocationPostsById(locationId, maxCount, pageId)
 
 Result in array : partial post object
 
-#### Search
+## Search
 
-##### Search profile
+## Search profile
 
 ```js
 InstaClient.searchProfile(query)
@@ -378,7 +372,7 @@ Result in array : a subset of profile.
 - `user`
 	- `following`
 
-##### Search hashtag
+## Search hashtag
 
 ```js
 InstaClient.searchHashtag(hashtag)
@@ -391,7 +385,7 @@ Result in array : a subset of hashtag.
 - `name`
 - `posts`
 
-##### Search location
+## Search location
 
 ```js
 InstaClient.searchLocation(location)
@@ -448,7 +442,7 @@ InstaClient.subscribeHashtagPosts(hashtag, (post, err) => {
 
 #### Account requests (user-relevant methods)
 
-##### Get account notifications
+## Get account notifications
 
 ```js
 InstaClient.getAccountNotifications()
@@ -488,7 +482,7 @@ InstaClient.subscribeAccountNotifications((post, err) => {
 });
 ```
 
-##### Get account stories
+#### Get account stories
 
 ```js
 InstaClient.getAccountStories()
@@ -507,79 +501,30 @@ Result in array : inbox-like
     - `requesting`
     - `following`
 
-## Changelog
 
-* `1.0.0` (2019-03-26) • Initial release
-* `1.0.1` (2019-03-27)
-	- Fixed throw error scope
-	- Fixed single photo post wrongly structured
-	- Added support for comments
-	- Added support for hashtags, mentions and tags in posts and comments
-	- Added posts subscriptions feature from users (untested) and hashtags
-* `1.0.2` (2019-03-27) • Added support for videos
-* `1.0.4` (2019-03-27)
-	- Fixed video post thumbnail & views count
-	- Using promises & observable
-* `1.0.5` (2019-03-27) • Added proper error for private accounts
-* `1.0.6` (2019-03-31) • Private account access doesn't require mutual follow
-* `1.0.7` (2019-04-03) • Added profile's last posts analytics #1 + more
-* `1.0.8` (2019-04-14)
-	- Using classes
-	- Added support for authentication using session cookie (only allows to access friend profile)
-	- Added support for locations
-	- Added search feature for profiles, hashtags & locations
-	- Added user-relevant properties
-	- Added support for notifications history & subscription
-	- Fixed subscriptions since *#1*
-	- Removed useless `id` properties
-* `1.0.9`
-	- Added `business` property to profile (when applicable)
-	- Automatically access public profile anonymously when user blocked
-* `1.0.10` (2020-01-26) • Fixed post comments on anonymous session
-* `1.0.11` (2020-04-18)
-    - Improved subscriptions
-        - Using async/await
-        - Using simple callbacks instead of observables
-        - Using object parameter for options
-        - Added full post fetching option
-        - Added subscription unsubscribe method
-    - Improved `401` detection
-    - Improved parsing
-        - Using RegExp
-        - Removed JSDOM dependency
-    - Added support for edited post captions
-* `1.0.12` (2020-06-16) • Small fix & refactor
-* `1.0.13` (2020-07-10) • Added support for stories
-* `1.0.14` (2020-10-17) • Fixed access to own private profile
-* `1.0.15` (2020-12-19)
-	- Removed Request dependency
-	- Improved `429` detection
-	- Added unit tests
-* `1.0.16` (2020-12-25)
-    - Added full post `commentCount` property
-	- Added partial post `timestamp` property
-	- Added post comment `id` property
-	- Added profile IDs memoization
-    - Added `getProfilePostsById` & `getProfilePosts` methods
-    - Added `getPostComments` method
-    - Added `getHashtagPosts` method
-    - Added `getLocationPostsById` method
-	- Added `409` detection
-    - Improved `401` detection
-	- Restored full post `shortcode` property
-* `1.0.17` (2021-01-21)
-  	- Fixed error on empty profile story
-    - Fixed `409` detection
-  	- Added profile story external link
-* `2.0.0` (202?-??-??)
-    - Refactored names
-    - Refactored scopes
-    - Refactored promises
-    - Refactored errors
-    - Refactored indents
-	- Renamed `getLocation` to `getLocationById`
-    - Reverse subscribe methods `post` & `error` parameters
-    - Improved unit tests coverage
-	- Added JSDoc
-	- Added links to partial post, hashtag & location
-	- Fixed post author link
+
+### Test
+
+- `git clone https://github.com/ezzcodeezzlife/ig-scraper.git`
+- `yarn install` or `npm install`
+- `yarn test` or `npm run test`
+
+Optional environment variables for more complete testing :
+- `SESSION_ID` : a session ID for authentication test and authenticated tests
+- `PUBLIC_PROFILE` : a public profile to access
+- `PRIVATE_PROFILE` : a private profile to access
+- `STORY_PROFILE_ID` : a profile ID with a story to read
+- `STORY_PROFILE_USERNAME` : a profile username with a story to read
+- `HASHTAG` (default value : `cat`) : a hashtag to fetch
+- `LOCATION_ID` (default value : `6889842` aka. Paris) : a location to fetch
+- `POST` : a post to fetch
+- `SEARCH_PROFILE` : a profile to search for
+- `SEARCH_HASHTAG` (default value : `cats`) : a hashtag to search for
+- `SEARCH_LOCATION` (default value : `Paris`) : a location to search for
+
+Methods not covered by tests :
+- `subscribeUserPosts`
+- `subscribeHashtagPosts`
+- `subscribeAccountNotifications`
+
+
