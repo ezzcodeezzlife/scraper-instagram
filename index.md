@@ -1,4 +1,4 @@
-![logo](https://github.com/ezzcodeezzlife/scraper-instagram/blob/main/logo.png)
+
 # scraper-instagram
 
 Scrape data from Instagram without applying for the authenticated API.
